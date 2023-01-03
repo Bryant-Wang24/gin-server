@@ -12,7 +12,7 @@ var (
 
 func InitMySQL() {
 	var err error
-	dsn := "root:485969746wqs@tcp(localhost:3306)/golang_db?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:485969746wqs@tcp(localhost:3306)/gin-blog?charset=utf8mb4&parseTime=True&loc=Local"
 	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("连接数据库失败", err)
