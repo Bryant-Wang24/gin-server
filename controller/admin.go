@@ -53,3 +53,12 @@ func Login(c *gin.Context) {
 		}
 	}
 }
+
+// Logout 登出接口
+func Logout(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"code": 0,
+		"data": nil,
+		"msg":  "退出登录成功",
+	})
+}
