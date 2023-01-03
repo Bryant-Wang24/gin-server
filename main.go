@@ -1,11 +1,13 @@
 package main
 
 import (
+	"example.com/blog/database"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	database.InitMySQL()
 	fmt.Println("Hello World")
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
