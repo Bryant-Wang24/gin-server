@@ -10,3 +10,9 @@ type Tag struct {
 	ArticleNum int       `json:"articleNum"`
 	Status     int       `json:"status"`
 }
+
+type UpdateTag struct {
+	Name       string    `json:"name"`
+	ID         int       `json:"id"`
+	CreateTime time.Time `json:"createTime"`
+}

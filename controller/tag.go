@@ -45,10 +45,29 @@ func DeleteTag(c *gin.Context) {
 	})
 }
 
-// UpdateTag 更新标签
+// UpdateTag 修改标签
 func UpdateTag(c *gin.Context) {
+	var tag model.Tag
+	var tagUpdate model.UpdateTag
+	err := c.BindJSON(&tagUpdate)
+	if err != nil {
+		return
+	}
+	//如果tag的name在数据库中已经存在，那么就返回错误信息
+	database.Db.Where("name = ?", tagUpdate.Name).First(&tag)
+	if tag.ID != 0 {
+		c.JSON(200, gin.H{
+			"code": 100,
+			"msg":  "标签名已存在",
+		})
+		return
+	}
+	//如果tag的name在数据库中不存在，那么就将name和更新时间更新到数据库中
+	database.Db.Exec("UPDATE tags SET name = ? , create_time = ? WHERE id = ?", tagUpdate.Name, tagUpdate.CreateTime, tagUpdate.ID)
 	c.JSON(200, gin.H{
-		"message": "update tag",
+		"code": 0,
+		"msg":  "修改标签成功",
+		"data": tag,
 	})
 }
 
