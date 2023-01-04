@@ -22,6 +22,14 @@ func SetupRouter() *gin.Engine {
 		//启用停用标签
 		tag.PUT("/status", controller.UpdateTagStatus)
 	}
+	//分类的路由组
+	category := r.Group(V1 + "/categories")
+	{
+		category.POST("", controller.CreateCategory)
+		category.DELETE("/:id", controller.DeleteCategory)
+		category.PUT("", controller.UpdateCategory)
+		category.GET("", controller.GetCategoryList)
+	}
 
 	err := r.Run(":7001")
 	if err != nil {
