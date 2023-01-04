@@ -12,7 +12,11 @@ type Tag struct {
 }
 
 type UpdateTag struct {
-	Name       string    `json:"name"`
-	ID         int       `json:"id"`
-	CreateTime time.Time `json:"createTime"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type UpdateTagStatus struct {
+	ID     int `json:"id"`
+	Status int `json:"status"`
 }
