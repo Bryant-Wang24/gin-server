@@ -17,10 +17,10 @@ func SetupRouter() *gin.Engine {
 	{
 		tag.POST("", controller.CreateTag)
 		tag.DELETE("/:id", controller.DeleteTag)
-		tag.PUT("/:id", controller.UpdateTag)
+		tag.PUT("", controller.UpdateTag)
 		tag.GET("", controller.GetTagList)
 		//启用停用标签
-		tag.PUT("/status/:id", controller.UpdateTagStatus)
+		tag.PUT("/status", controller.UpdateTagStatus)
 	}
 
 	err := r.Run(":7001")
