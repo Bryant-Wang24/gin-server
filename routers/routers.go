@@ -2,6 +2,7 @@ package routers
 
 import (
 	"example.com/blog/controller"
+	"example.com/blog/middleware/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +14,7 @@ func SetupRouter() *gin.Engine {
 	r.POST(V1+"/admin/login", controller.Login)
 	r.POST(V1+"/admin/logout", controller.Logout)
 	//标签的路由组
-	tag := r.Group(V1 + "/tags")
+	tag := r.Group(V1 + "/tags").Use(jwt.JWT())
 	{
 		tag.POST("", controller.CreateTag)
 		tag.DELETE("/:id", controller.DeleteTag)
@@ -23,7 +24,7 @@ func SetupRouter() *gin.Engine {
 		tag.PUT("/status", controller.UpdateTagStatus)
 	}
 	//分类的路由组
-	category := r.Group(V1 + "/categories")
+	category := r.Group(V1 + "/category").Use(jwt.JWT())
 	{
 		category.POST("", controller.CreateCategory)
 		category.DELETE("/:id", controller.DeleteCategory)
