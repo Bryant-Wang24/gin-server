@@ -32,6 +32,9 @@ func SetupRouter() *gin.Engine {
 		category.GET("", controller.GetCategoryList)
 	}
 
+	//上传文件
+	r.POST(V1+"/upload", controller.UploadFile)
+
 	err := r.Run(":7001")
 	if err != nil {
 		return nil
