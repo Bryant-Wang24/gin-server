@@ -24,7 +24,7 @@ func SetupRouter() *gin.Engine {
 		tag.PUT("/status", controller.UpdateTagStatus)
 	}
 	//分类的路由组
-	category := r.Group(V1 + "/category").Use(jwt.JWT())
+	category := r.Group(V1 + "/categories").Use(jwt.JWT())
 	{
 		category.POST("", controller.CreateCategory)
 		category.DELETE("/:id", controller.DeleteCategory)
