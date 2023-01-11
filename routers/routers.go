@@ -32,6 +32,15 @@ func SetupRouter() *gin.Engine {
 		category.GET("", controller.GetCategoryList)
 	}
 
+	//文章的路由组
+	article := r.Group(V1 + "/articles").Use(jwt.JWT())
+	{
+		article.POST("", controller.CreateArticle)
+		article.DELETE("/:id", controller.DeleteArticle)
+		article.PUT("", controller.UpdateArticle)
+		article.GET("", controller.GetArticleList)
+	}
+
 	//上传文件
 	r.POST(V1+"/upload", controller.UploadFile)
 
