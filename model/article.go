@@ -49,3 +49,11 @@ type Article struct {
 //	  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
 //	  PRIMARY KEY (`id`)
 //	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='文章表';
+
+//创建文章和标签关联表
+//CREATE TABLE `article_tag` (
+//	  `id` int(11) NOT NULL AUTO_INCREMENT,
+//	  `article_id` int(11) NOT NULL DEFAULT '0' comment '文章id',
+//	  `tag_id` int(11) NOT NULL DEFAULT '0' comment '标签id',
+//	  PRIMARY KEY (`id`)
+//	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='文章和标签关联表';

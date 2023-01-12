@@ -76,7 +76,6 @@ func GetTagList(c *gin.Context) {
 	name := c.Query("name")
 	page := c.DefaultQuery("page", "1")          //默认值为1
 	pageSize := c.DefaultQuery("pageSize", "20") //默认值为20
-	fmt.Println(name, page, pageSize)
 	//把page和pageSize转换为int类型
 	var pageInt, pageSizeInt int
 	_, err := fmt.Sscanf(page, "%d", &pageInt)
