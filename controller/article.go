@@ -1,14 +1,15 @@
 package controller
 
 import (
-	"example.com/blog/database"
-	"example.com/blog/model"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"strconv"
 	"strings"
 	"time"
+
+	"example.com/blog/database"
+	"example.com/blog/model"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
@@ -69,7 +70,17 @@ func GetArticleList(c *gin.Context) {
 		DB = DB.Model(&model.Article{}).Where("categories LIKE ?", "%"+categories+"%").Count(&totalCount)
 	}
 	if tags != "" {
-		fmt.Println("tags", tags)
+		var tagIds []string
+		var tagsArr []string
+		tagsArr = strings.Split(tags, ",")
+		for i := 0; i < len(tagsArr); i++ {
+			var tag model.Tag
+			database.Db.Where("name = ?", tagsArr[i]).First(&tag)
+			tagIds = append(tagIds, strconv.Itoa(tag.ID))
+		}
+		DB = DB.Where("tags regexp ?", strings.Join(tagIds, ",")).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
+		DB = DB.Model(&model.Article{}).Where("tags regexp ?", strings.Join(tagIds, ",")).Count(&totalCount)
+
 	}
 
 	if status != "" {
