@@ -34,12 +34,73 @@ func CreateArticle(c *gin.Context) {
 
 // DeleteArticle 删除文章
 func DeleteArticle(c *gin.Context) {
-	fmt.Println("删除文章")
+	id := c.Param("id")
+	database.Db.Exec("DELETE FROM articles WHERE id = ?", id)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "删除文章成功",
+	})
 }
 
 // UpdateArticle 修改文章
 func UpdateArticle(c *gin.Context) {
-	fmt.Println("修改文章")
+	var article model.Article
+	err := c.BindJSON(&article)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	article.UpdateTime = time.Now()
+	database.Db.Model(&article).Where("id = ?", article.ID).Updates(article)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "修改文章成功",
+		"data": article,
+	})
+}
+
+// UpdateArticleStatus 修改文章状态
+func UpdateArticleStatus(c *gin.Context) {
+	var article model.Article
+	err := c.BindJSON(&article)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	database.Db.Model(&article).Where("id = ?", article.ID).Update("status", article.Status)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "修改文章状态成功",
+		"data": nil,
+	})
+}
+
+// UpdateArticlePublishStatus 修改文章发布状态
+func UpdateArticlePublishStatus(c *gin.Context) {
+	var article model.Article
+	err := c.BindJSON(&article)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	database.Db.Model(&article).Where("id = ?", article.ID).Update("publish_status", article.PublishStatus)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "修改文章发布状态成功",
+		"data": nil,
+	})
+}
+
+// GetArticleList 查询单篇文章
+func GetSingleArticle(c *gin.Context) {
+	id := c.Param("id")
+	article := model.Article{}
+	database.Db.Where("id = ?", id).First(&article)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "获取文章成功",
+		"data": article,
+	})
 }
 
 // GetArticleList 获取文章列表

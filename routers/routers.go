@@ -37,8 +37,15 @@ func SetupRouter() *gin.Engine {
 	{
 		article.POST("", controller.CreateArticle)
 		article.DELETE("/:id", controller.DeleteArticle)
-		article.PUT("", controller.UpdateArticle)
 		article.GET("", controller.GetArticleList)
+		// 查询单篇文章
+		article.GET("/:id/edit", controller.GetSingleArticle)
+		// 修改文章
+		article.PUT("", controller.UpdateArticle)
+		// 修改文章状态
+		article.PUT("/status", controller.UpdateArticleStatus)
+		// 修改文章发布状态
+		article.PUT("/publishStatus", controller.UpdateArticlePublishStatus)
 	}
 
 	//上传文件
