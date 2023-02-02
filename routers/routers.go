@@ -51,6 +51,13 @@ func SetupRouter() *gin.Engine {
 	//上传文件
 	r.POST(V1+"/upload", controller.UploadFile)
 
+	// 关于路由组
+	about := r.Group(V1 + "/about").Use(jwt.JWT())
+	{
+		about.GET("", controller.GetAbout)
+		about.PUT("", controller.UpdateAbout)
+	}
+
 	err := r.Run(":7001")
 	if err != nil {
 		return nil
