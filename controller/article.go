@@ -91,6 +91,37 @@ func UpdateArticlePublishStatus(c *gin.Context) {
 	})
 }
 
+// 是否开启文章一键收藏
+func UpdateArticleCollectStatus(c *gin.Context) {
+	type IsCollect struct {
+		IsCollect int `json:"isCollect"`
+	}
+	var isCollect IsCollect
+	err := c.BindJSON(&isCollect)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	if isCollect.IsCollect == 1 {
+		// 把所有文章的收藏状态改为开启
+		database.Db.Exec("UPDATE articles SET is_collect = 1")
+	} else {
+		// 把所有文章的收藏状态改为关闭
+		database.Db.Exec("UPDATE articles SET is_collect = 2")
+	}
+	var msg string
+	if isCollect.IsCollect == 1 {
+		msg = "一键开启收藏成功"
+	} else {
+		msg = "一键关闭收藏成功"
+	}
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  msg,
+		"data": nil,
+	})
+}
+
 // GetArticleList 查询单篇文章
 func GetSingleArticle(c *gin.Context) {
 	id := c.Param("id")

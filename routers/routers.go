@@ -46,6 +46,8 @@ func SetupRouter() *gin.Engine {
 		article.PUT("/status", controller.UpdateArticleStatus)
 		// 修改文章发布状态
 		article.PUT("/publishStatus", controller.UpdateArticlePublishStatus)
+		// 是否开启文章一键收藏
+		article.POST("/collectStatus", controller.UpdateArticleCollectStatus)
 	}
 
 	//上传文件
