@@ -56,6 +56,7 @@ func SetupRouter() *gin.Engine {
 	{
 		about.GET("", controller.GetAbout)
 		about.PUT("", controller.UpdateAbout)
+		about.POST("", controller.AddAbout)
 	}
 
 	err := r.Run(":7001")
