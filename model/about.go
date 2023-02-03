@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Image struct {
-	ID     int    `json:"id" gorm:"primary_key"`
+	ID     int    `json:"id,omitempty" gorm:"primary_key"`
 	ImgUrl string `json:"imgUrl"`
 	Link   string `json:"link"`
 }
@@ -19,7 +19,7 @@ type About struct {
 }
 
 type AboutInfo struct {
-	ID         int       `json:"id" gorm:"primary_key"`
+	ID         int       `json:"id,omitempty"`
 	Tags       []string  `json:"tags"`
 	Desc       string    `json:"desc"`
 	ShowResume int       `json:"showResume"`
