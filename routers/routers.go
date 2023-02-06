@@ -50,6 +50,14 @@ func SetupRouter() *gin.Engine {
 		article.POST("/collectStatus", controller.UpdateArticleCollectStatus)
 	}
 
+	//个人简介路由组
+	introduction := r.Group(V1 + "/config/right/introduction").Use(jwt.JWT())
+	{
+		introduction.GET("", controller.GetIntroduction)
+		introduction.POST("", controller.AddIntroduction)
+		introduction.PUT("", controller.UpdateIntroduction)
+	}
+
 	//上传文件
 	r.POST(V1+"/upload", controller.UploadFile)
 

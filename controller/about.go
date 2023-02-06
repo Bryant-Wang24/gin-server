@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 获取关于信息
+// GetAbout 获取关于信息
 func GetAbout(c *gin.Context) {
 	var about model.About
 	// 查询所有数据
