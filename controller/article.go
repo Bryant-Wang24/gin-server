@@ -125,16 +125,20 @@ func UpdateArticleCollectStatus(c *gin.Context) {
 // GetArticleList 查询单篇文章
 func GetSingleArticle(c *gin.Context) {
 	id := c.Param("id")
+	from := c.Query("type")
 	article := model.Article{}
 	database.Db.Where("id = ?", id).First(&article)
-	var tagNames []string
-	if article.Tags != "" {
-		for _, tagId := range strings.Split(article.Tags, ",") {
-			var tag model.Tag
-			database.Db.Where("id = ?", tagId).First(&tag)
-			tagNames = append(tagNames, tag.Name)
+	// 如果是官网发来的请求，需要把标签id转换成标签名称
+	if from == "web" {
+		var tagNames []string
+		if article.Tags != "" {
+			for _, tagId := range strings.Split(article.Tags, ",") {
+				var tag model.Tag
+				database.Db.Where("id = ?", tagId).First(&tag)
+				tagNames = append(tagNames, tag.Name)
+			}
+			article.Tags = strings.Join(tagNames, ",")
 		}
-		article.Tags = strings.Join(tagNames, ",")
 	}
 	c.JSON(200, gin.H{
 		"code": 0,
