@@ -127,6 +127,15 @@ func GetSingleArticle(c *gin.Context) {
 	id := c.Param("id")
 	article := model.Article{}
 	database.Db.Where("id = ?", id).First(&article)
+	var tagNames []string
+	if article.Tags != "" {
+		for _, tagId := range strings.Split(article.Tags, ",") {
+			var tag model.Tag
+			database.Db.Where("id = ?", tagId).First(&tag)
+			tagNames = append(tagNames, tag.Name)
+		}
+		article.Tags = strings.Join(tagNames, ",")
+	}
 	c.JSON(200, gin.H{
 		"code": 0,
 		"msg":  "获取文章成功",
