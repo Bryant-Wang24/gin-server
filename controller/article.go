@@ -139,6 +139,9 @@ func GetSingleArticle(c *gin.Context) {
 			}
 			article.Tags = strings.Join(tagNames, ",")
 		}
+		// 如果是官网发来的请求，需要统计文章的阅读量，每次阅读加1
+		// 这里先暂时直接数据库统计，后续可以用redis来实现进行优化
+		database.Db.Model(&article).Where("id = ?", article.ID).Update("views", article.Views+1)
 	}
 	c.JSON(200, gin.H{
 		"code": 0,
