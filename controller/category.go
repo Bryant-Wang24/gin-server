@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"fmt"
+
 	"example.com/blog/database"
 	"example.com/blog/model"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -83,8 +84,14 @@ func GetCategoryList(c *gin.Context) {
 	}
 	var category []model.Category
 	var totalCount int64
+	var article []model.Article
 	database.Db.Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&category)
 	database.Db.Model(&model.Category{}).Count(&totalCount)
+	for i := 0; i < len(category); i++ {
+		// 查询分类下的文章数量
+		database.Db.Where("categories = ?", category[i].Name).Find(&article)
+		category[i].ArticleNum = len(article)
+	}
 	if name != "" {
 		database.Db.Where("name LIKE ?", "%"+name+"%").Find(&category)
 		database.Db.Model(&model.Category{}).Where("name LIKE ?", "%"+name+"%").Count(&totalCount)
