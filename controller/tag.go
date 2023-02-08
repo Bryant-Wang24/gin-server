@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"fmt"
+	"strconv"
+
 	"example.com/blog/database"
 	"example.com/blog/model"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -88,10 +90,16 @@ func GetTagList(c *gin.Context) {
 	}
 	var tags []model.Tag
 	var totalCount int64
+	var article []model.Article
 	//分页查询数据库，按照创建时间排序,翻译为sql语句为：SELECT * FROM `tags`  ORDER BY `tags`.`created_at` DESC LIMIT 10 OFFSET 0
 	database.Db.Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&tags)
 	// 查询数据库总数 翻译为sql语句为：SELECT count(*) FROM `tags`
 	database.Db.Model(&model.Tag{}).Count(&totalCount)
+	for i := 0; i < len(tags); i++ {
+		//查询每个标签下的文章数
+		database.Db.Where("tags LIKE ?", "%"+strconv.Itoa(tags[i].ID)+"%").Find(&article)
+		tags[i].ArticleNum = len(article)
+	}
 	//如果传过来name不为空，就模糊查询
 	if name != "" {
 		database.Db.Where("name LIKE ?", "%"+name+"%").Find(&tags)
