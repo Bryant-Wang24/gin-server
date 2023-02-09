@@ -174,8 +174,8 @@ func GetArticleList(c *gin.Context) {
 		DB = DB.Where("title LIKE ?", "%"+title+"%").Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if categories != "" {
-		DB = DB.Model(&model.Article{}).Where("categories LIKE ?", "%"+categories+"%").Count(&totalCount)
-		DB = DB.Where("categories LIKE ?", "%"+categories+"%").Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
+		DB = DB.Model(&model.Article{}).Where("categories = ?", categories).Count(&totalCount)
+		DB = DB.Where("categories = ?", categories).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if tags != "" {
 		var tagIds []string
