@@ -170,12 +170,12 @@ func GetArticleList(c *gin.Context) {
 	var totalCount int64
 	var articles []model.Article
 	if title != "" {
-		DB = DB.Where("title LIKE ?", "%"+title+"%").Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("title LIKE ?", "%"+title+"%").Count(&totalCount)
+		DB = DB.Where("title LIKE ?", "%"+title+"%").Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if categories != "" {
-		DB = DB.Where("categories LIKE ?", "%"+categories+"%").Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("categories LIKE ?", "%"+categories+"%").Count(&totalCount)
+		DB = DB.Where("categories LIKE ?", "%"+categories+"%").Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if tags != "" {
 		var tagIds []string
@@ -186,26 +186,25 @@ func GetArticleList(c *gin.Context) {
 			database.Db.Where("name = ?", tagsArr[i]).First(&tag)
 			tagIds = append(tagIds, strconv.Itoa(tag.ID))
 		}
-		DB = DB.Where("tags regexp ?", strings.Join(tagIds, ",")).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("tags regexp ?", strings.Join(tagIds, ",")).Count(&totalCount)
-
+		DB = DB.Where("tags regexp ?", strings.Join(tagIds, ",")).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 
 	if status != "" {
-		DB = DB.Where("status = ?", status).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("status = ?", status).Count(&totalCount)
+		DB = DB.Where("status = ?", status).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if publishStatus != "" {
-		DB = DB.Where("publish_status = ?", publishStatus).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("publish_status = ?", publishStatus).Count(&totalCount)
+		DB = DB.Where("publish_status = ?", publishStatus).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if createStartTime != "" && createEndTime != "" {
-		DB = DB.Where("create_time BETWEEN ? AND ?", createStartTime, createEndTime).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("create_time BETWEEN ? AND ?", createStartTime, createEndTime).Count(&totalCount)
+		DB = DB.Where("create_time BETWEEN ? AND ?", createStartTime, createEndTime).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	if updateStartTime != "" && updateEndTime != "" {
-		DB = DB.Where("update_time BETWEEN ? AND ?", updateStartTime, updateEndTime).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 		DB = DB.Model(&model.Article{}).Where("update_time BETWEEN ? AND ?", updateStartTime, updateEndTime).Count(&totalCount)
+		DB = DB.Where("update_time BETWEEN ? AND ?", updateStartTime, updateEndTime).Offset((pageInt - 1) * pageSizeInt).Limit(pageSizeInt).Find(&articles)
 	}
 	//分页查询
 	if title == "" && categories == "" && tags == "" && status == "" && publishStatus == "" && createStartTime == "" && createEndTime == "" && updateStartTime == "" && updateEndTime == "" {
