@@ -13,6 +13,7 @@ func SetupRouter() *gin.Engine {
 	r.GET(V1+"/ping", controller.Test)
 	r.POST(V1+"/admin/login", controller.Login)
 	r.POST(V1+"/admin/logout", controller.Logout)
+	r.POST(V1+"/admin/register", controller.Register)
 	//标签的路由组
 	tag := r.Group(V1 + "/tags").Use(jwt.JWT())
 	{

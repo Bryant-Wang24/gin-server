@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"example.com/blog/model"
 	"example.com/blog/utils"
 	"github.com/astaxie/beego/validation"
@@ -25,10 +27,10 @@ func Login(c *gin.Context) {
 	ok, _ := valid.Valid(&auth)
 	data := make(map[string]interface{})
 	if ok {
-		isExist := utils.CheckAuth(auth.UserName, auth.Password)
+		isExist := utils.CheckAuth(auth.Username, auth.Password)
 		//	如果在数据库中存在该用户，且密码正确，那么就生成token，否则就返回错误信息
 		if isExist {
-			token, err := utils.GenerateToken(auth.UserName, auth.Password)
+			token, err := utils.GenerateToken(auth.Username, auth.Password)
 			if err != nil {
 				c.JSON(200, gin.H{
 					"code": 500,
@@ -38,7 +40,7 @@ func Login(c *gin.Context) {
 				return
 			}
 			data["token"] = token
-			data["userName"] = auth.UserName
+			data["username"] = auth.Username
 			c.JSON(200, gin.H{
 				"code": 0,
 				"msg":  "登录成功",
@@ -49,6 +51,33 @@ func Login(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"code": 100,
 				"msg":  "用户名或密码错误",
+			})
+		}
+	}
+}
+
+// Register 注册接口
+func Register(c *gin.Context) {
+	var auth model.Auth
+	err := c.BindJSON(&auth)
+	if err != nil {
+		return
+	}
+	valid := validation.Validation{}
+	ok, _ := valid.Valid(&auth)
+	if ok {
+		isExist := utils.AddUser(auth.Username, auth.Password)
+		fmt.Println("isExist", isExist)
+		if isExist {
+			c.JSON(200, gin.H{
+				"code": 100,
+				"msg":  "该用户已存在",
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"code": 0,
+				"msg":  "注册成功",
+				"data": auth,
 			})
 		}
 	}
