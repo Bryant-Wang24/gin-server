@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -8,6 +9,7 @@ import (
 
 	"example.com/blog/database"
 	"example.com/blog/model"
+	"example.com/blog/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -139,9 +141,17 @@ func GetSingleArticle(c *gin.Context) {
 			}
 			article.Tags = strings.Join(tagNames, ",")
 		}
-		// 如果是官网发来的请求，需要统计文章的阅读量，每次阅读加1
-		// 这里先暂时直接数据库统计，后续可以用redis来实现进行优化
-		database.Db.Model(&article).Where("id = ?", article.ID).Update("views", article.Views+1)
+		// 获取请求来源的ip地址
+		ip := c.ClientIP()
+		ipAndId := ip + id
+		// 把拼接好的字符串进行md5加密，用来作为redis的key
+		key := utils.MD5(ipAndId)
+		// 判断redis中是否存在这个key，如果存在，说明是同一个ip地址访问的，不需要统计阅读量，如果不存在，说明是不同的ip地址访问的，需要统计阅读量
+		if !utils.IpExists(key) {
+			// 把这个key存入redis中，设置过期时间为1小时，过期时间到了，这个key就会被删除
+			database.Rdb.SetNX(context.Background(), key, 1, 1*time.Hour)
+			database.Db.Model(&article).Where("id = ?", article.ID).Update("views", article.Views+1)
+		}
 	}
 	c.JSON(200, gin.H{
 		"code": 0,
