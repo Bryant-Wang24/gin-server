@@ -1,9 +1,10 @@
 package jwt
 
 import (
+	"time"
+
 	"example.com/blog/utils"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func JWT() gin.HandlerFunc {

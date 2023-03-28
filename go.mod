@@ -5,6 +5,13 @@ go 1.18
 require github.com/go-redis/redis/v8 v8.11.5
 
 require (
+	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible // indirect
+	github.com/lestrrat-go/strftime v1.0.6 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5 // indirect
+)
+
+require (
 	github.com/astaxie/beego v1.12.3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
@@ -26,10 +33,11 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
+	github.com/sirupsen/logrus v1.9.0
 	github.com/ugorji/go/codec v1.2.8 // indirect
 	golang.org/x/crypto v0.4.0 // indirect
 	golang.org/x/net v0.4.0 // indirect
-	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
