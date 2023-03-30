@@ -235,6 +235,21 @@ func GetArticleList(c *gin.Context) {
 			articles[i].Tags = strings.Join(tagNames, ",")
 		}
 	}
+	code := c.Query("code")
+	var userInfo map[string]interface{}
+	if code != "" {
+		// 通过 code, 获取 token
+		var tokenAuthUrl, err1 = utils.GetToken(code)
+		if err1 != nil {
+			fmt.Println("GetTokenErr:", err1)
+		}
+		// 通过 token, 获取用户信息
+		user, err2 := utils.GetUserInfo(tokenAuthUrl)
+		if err2 != nil {
+			fmt.Println("GetUserInfoErr:", err2)
+		}
+		userInfo = user
+	}
 	c.JSON(200, gin.H{
 		"code": 0,
 		"msg":  "获取文章列表成功",
@@ -243,6 +258,7 @@ func GetArticleList(c *gin.Context) {
 			"pageSize":   pageSizeInt,
 			"totalCount": totalCount,
 			"list":       articles,
+			"userInfo":   userInfo,
 		},
 	})
 }

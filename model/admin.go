@@ -12,3 +12,9 @@ type Admin struct {
 	// UpdateAt time.Time `json:"update_at"`
 	// DeletedAt time.Time `json:"deleted_at"`
 }
+
+type Conf struct {
+	ClientId     string
+	ClientSecret string //GitHub里所获取
+	RedirectUrl  string //重定向URL
+}
