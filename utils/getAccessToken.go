@@ -44,12 +44,12 @@ func GetToken(code string) (string, error) {
 		fmt.Println("ioutil.ReadAllErr", err)
 	}
 	// 拿到access_token
-	var token string
+	var token map[string]interface{}
 	err = json.Unmarshal(body, &token)
 	if err != nil {
-		fmt.Println("json.UnmarshalErr", err)
+		fmt.Println("tokenJson.UnmarshalErr", err)
 	}
-	return token, nil
+	return token["access_token"].(string), nil
 }
 
 // GetUserInfo 通过access_token获取用户信息
@@ -78,7 +78,7 @@ func GetUserInfo(accessToken string) (map[string]interface{}, error) {
 	var userInfo map[string]interface{}
 	err = json.Unmarshal(body, &userInfo)
 	if err != nil {
-		fmt.Println("json.UnmarshalErr", err)
+		fmt.Println("userInfoJson.UnmarshalErr", err)
 	}
 	return userInfo, nil
 }
