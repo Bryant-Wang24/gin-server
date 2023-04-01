@@ -72,7 +72,7 @@ func SetupRouter() *gin.Engine {
 		about.POST("", controller.AddAbout)
 	}
 
-	err := r.Run(":7001")
+	err := r.Run(":9000")
 	if err != nil {
 		return nil
 	} // listen and serve on
