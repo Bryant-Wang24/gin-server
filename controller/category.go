@@ -93,9 +93,11 @@ func GetCategoryList(c *gin.Context) {
 		if from == "web" {
 			database.Db.Where("categories = ? and status= 1", category[i].Name).Find(&article)
 			database.Db.Model(&model.Category{}).Where("id = ?", category[i].ID).Update("article_num", len(article))
+			category[i].ArticleNum = len(article)
 		} else {
 			database.Db.Where("categories = ?", category[i].Name).Find(&article)
 			database.Db.Model(&model.Category{}).Where("id = ?", category[i].ID).Update("article_num", len(article))
+			category[i].ArticleNum = len(article)
 		}
 	}
 	if name != "" {

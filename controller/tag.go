@@ -76,6 +76,7 @@ func UpdateTag(c *gin.Context) {
 func GetTagList(c *gin.Context) {
 	//根据name模糊查询
 	name := c.Query("name")
+	from := c.Query("from")
 	page := c.DefaultQuery("page", "1")          //默认值为1
 	pageSize := c.DefaultQuery("pageSize", "20") //默认值为20
 	//把page和pageSize转换为int类型
@@ -96,9 +97,16 @@ func GetTagList(c *gin.Context) {
 	// 查询数据库总数 翻译为sql语句为：SELECT count(*) FROM `tags`
 	database.Db.Model(&model.Tag{}).Count(&totalCount)
 	for i := 0; i < len(tags); i++ {
-		//查询每个标签下的文章数
-		database.Db.Where("tags LIKE ?", "%"+strconv.Itoa(tags[i].ID)+"%").Find(&article)
-		tags[i].ArticleNum = len(article)
+		// 如果是从web端获取标签列表，那么就查询每个标签下已启用的文章数
+		if from == "web" {
+			database.Db.Where("tags LIKE ? AND status = ?", "%"+strconv.Itoa(tags[i].ID)+"%", 1).Find(&article)
+			database.Db.Exec("UPDATE tags SET article_num = ? WHERE id = ?", len(article), tags[i].ID)
+			tags[i].ArticleNum = len(article)
+		} else {
+			database.Db.Where("tags LIKE ?", "%"+strconv.Itoa(tags[i].ID)+"%").Find(&article)
+			database.Db.Exec("UPDATE tags SET article_num = ? WHERE id = ?", len(article), tags[i].ID)
+			tags[i].ArticleNum = len(article)
+		}
 	}
 	//如果传过来name不为空，就模糊查询
 	if name != "" {
