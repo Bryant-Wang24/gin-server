@@ -71,6 +71,7 @@ func UpdateCategory(c *gin.Context) {
 func GetCategoryList(c *gin.Context) {
 	//根据name模糊查询
 	name := c.Query("name")
+	from := c.Query("from")
 	page := c.DefaultQuery("page", "1")          //默认值为1
 	pageSize := c.DefaultQuery("pageSize", "20") //默认值为20
 	var pageInt, pageSizeInt int
@@ -89,8 +90,13 @@ func GetCategoryList(c *gin.Context) {
 	database.Db.Model(&model.Category{}).Count(&totalCount)
 	for i := 0; i < len(category); i++ {
 		// 查询分类下的文章数量
-		database.Db.Where("categories = ?", category[i].Name).Find(&article)
-		category[i].ArticleNum = len(article)
+		if from == "web" {
+			database.Db.Where("categories = ? and status= 1", category[i].Name).Find(&article)
+			category[i].ArticleNum = len(article)
+		} else {
+			database.Db.Where("categories = ?", category[i].Name).Find(&article)
+			category[i].ArticleNum = len(article)
+		}
 	}
 	if name != "" {
 		database.Db.Where("name LIKE ?", "%"+name+"%").Find(&category)
