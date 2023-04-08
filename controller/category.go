@@ -92,10 +92,10 @@ func GetCategoryList(c *gin.Context) {
 		// 查询分类下的文章数量
 		if from == "web" {
 			database.Db.Where("categories = ? and status= 1", category[i].Name).Find(&article)
-			category[i].ArticleNum = len(article)
+			database.Db.Model(&model.Category{}).Where("id = ?", category[i].ID).Update("article_num", len(article))
 		} else {
 			database.Db.Where("categories = ?", category[i].Name).Find(&article)
-			category[i].ArticleNum = len(article)
+			database.Db.Model(&model.Category{}).Where("id = ?", category[i].ID).Update("article_num", len(article))
 		}
 	}
 	if name != "" {
