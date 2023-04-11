@@ -16,9 +16,8 @@ func UploadFile(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(file.Filename)
 	// 保存文件
-	err = c.SaveUploadedFile(file, "images/logo")
+	err = c.SaveUploadedFile(file, "/images/logo/"+file.Filename)
 	if err != nil {
 		fmt.Println("上传文件失败", err)
 		c.JSON(200, gin.H{
