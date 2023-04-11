@@ -30,7 +30,7 @@ func UploadFile(c *gin.Context) {
 		"code": 200,
 		"msg":  "上传文件成功",
 		"data": []gin.H{
-			{"url": "https:wangqiushuang.online:8080/logo/" + file.Filename},
+			{"url": "https://wangqiushuang.online:8080/logo/" + file.Filename},
 		},
 	})
 }
