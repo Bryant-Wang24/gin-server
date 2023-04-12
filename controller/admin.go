@@ -70,8 +70,9 @@ func Register(c *gin.Context) {
 		fmt.Println("isExist", isExist)
 		if isExist {
 			c.JSON(200, gin.H{
-				"code": 100,
+				"code": 409,
 				"msg":  "该用户已存在",
+				"data": nil,
 			})
 		} else {
 			c.JSON(200, gin.H{
