@@ -13,6 +13,11 @@ func JWT() gin.HandlerFunc {
 		var data interface{}
 		var message string
 		token := c.Request.Header.Get("Authorization")
+		// 如果是官网发来的请求，那么就不需要验证token
+		if c.Request.Header.Get("X-from") == "web" {
+			c.Next()
+			return
+		}
 		if token == "" {
 			code = 100
 			message = "token为空"

@@ -28,6 +28,16 @@ func Login(c *gin.Context) {
 	data := make(map[string]interface{})
 	if ok {
 		isExist := utils.CheckAuth(auth.Username, auth.Password)
+		// 如果是登录后管，需要检查这个用户对应的is_admin字段是否为1
+		if c.Request.Header.Get("X-from") != "web" {
+			if !utils.CheckAdmin(auth.Username) {
+				c.JSON(200, gin.H{
+					"code": 100,
+					"msg":  "该用户不是管理员",
+				})
+				return
+			}
+		}
 		//	如果在数据库中存在该用户，且密码正确，那么就生成token，否则就返回错误信息
 		if isExist {
 			token, err := utils.GenerateToken(auth.Username, auth.Password)
@@ -90,5 +100,32 @@ func Logout(c *gin.Context) {
 		"code": 0,
 		"data": nil,
 		"msg":  "退出登录成功",
+	})
+}
+
+// GetUserInfo 获取github用户信息
+func GetUserInfo(c *gin.Context) {
+	code := c.Query("code")
+	var userInfo = make(map[string]interface{})
+	if code != "" {
+		// 通过 code, 获取 token
+		var tokenAuthUrl, err1 = utils.GetToken(code)
+		if err1 != nil {
+			fmt.Println("GetTokenErr:", err1)
+		}
+		// 通过 token, 获取用户信息
+		user, err2 := utils.GetUserInfo(tokenAuthUrl)
+		if err2 != nil {
+			fmt.Println("GetUserInfoErr:", err2)
+		}
+		userInfo["avatar"] = user["avatar_url"]
+		userInfo["username"] = user["login"]
+	}
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "获取用户信息成功",
+		"data": gin.H{
+			"userInfo": userInfo,
+		},
 	})
 }

@@ -3,6 +3,7 @@ package model
 type Auth struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	IsAdmin  int    `json:"is_admin"`
 }
 
 type Admin struct {

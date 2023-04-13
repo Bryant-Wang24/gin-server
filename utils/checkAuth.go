@@ -16,6 +16,17 @@ func CheckAuth(username, password string) bool {
 	return false
 }
 
+// CheckAdmin 检查用户是否是管理员
+func CheckAdmin(username string) bool {
+	var admin model.Admin
+	database.Db.Where("username = ?", username).First(&admin)
+	//如果用户名存在，且是管理员，返回true
+	if admin.ID != 0 && admin.IsAdmin == 1 {
+		return true
+	}
+	return false
+}
+
 // AddUser 添加用户
 func AddUser(username, password string) bool {
 	var admin model.Admin
