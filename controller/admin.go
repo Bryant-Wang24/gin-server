@@ -66,9 +66,38 @@ func Login(c *gin.Context) {
 	}
 }
 
+// 修改密码
+func ChangePassword(c *gin.Context) {
+	var auth model.Auth
+	err := c.BindJSON(&auth)
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	valid := validation.Validation{}
+	ok, _ := valid.Valid(&auth)
+	if ok {
+		isExist := utils.CheckPassword(auth.Username, auth.Password)
+		if isExist {
+			c.JSON(200, gin.H{
+				"code": 0,
+				"msg":  "修改密码成功",
+				"data": auth,
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"code": 100,
+				"msg":  "修改密码失败",
+				"data": nil,
+			})
+		}
+	}
+}
+
 // Register 注册接口
 func Register(c *gin.Context) {
 	var auth model.Auth
+	from := c.Query("from")
 	err := c.BindJSON(&auth)
 	if err != nil {
 		return
@@ -76,8 +105,7 @@ func Register(c *gin.Context) {
 	valid := validation.Validation{}
 	ok, _ := valid.Valid(&auth)
 	if ok {
-		isExist := utils.AddUser(auth.Username, auth.Password)
-		fmt.Println("isExist", isExist)
+		isExist := utils.AddUser(auth.Username, auth.Password, from)
 		if isExist {
 			c.JSON(200, gin.H{
 				"code": 409,

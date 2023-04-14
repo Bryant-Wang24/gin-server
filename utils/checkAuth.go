@@ -28,7 +28,7 @@ func CheckAdmin(username string) bool {
 }
 
 // AddUser 添加用户
-func AddUser(username, password string) bool {
+func AddUser(username, password, from string) bool {
 	var admin model.Admin
 	admin.Username = username
 	admin.Password = password
@@ -36,14 +36,31 @@ func AddUser(username, password string) bool {
 	database.Db.Where("username = ?", username).First(&admin)
 	// 如果用户存在，返回true;如果用户不存在，添加用户
 	if admin.ID != 0 {
-		return true
+		if from == "github" {
+			// 如果是github登录，那么就更新密码
+			database.Db.Model(&admin).Update("password", password)
+			return false
+		} else {
+			return true
+		}
 	} else {
 		database.Db.Create(&admin)
 		return false
 	}
-	// database.Db.Create(&admin)
-	// if admin.ID != 0 {
-	// 	return true
-	// }
-	// return false
+}
+
+// ChangePassword 修改密码
+func CheckPassword(username, password string) bool {
+	var admin model.Admin
+	admin.Username = username
+	admin.Password = password
+	// 判断用户是否存在
+	database.Db.Where("username = ?", username).First(&admin)
+	// 如果用户存在，修改密码;如果用户不存在，返回false
+	if admin.ID != 0 {
+		database.Db.Model(&admin).Update("password", password)
+		return true
+	} else {
+		return false
+	}
 }
