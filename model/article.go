@@ -25,6 +25,23 @@ type Article struct {
 	UpdateTime    time.Time `json:"updateTime"`    //文章更新时间
 }
 
+type Like struct {
+	ID         int       `json:"id" gorm:"primary_key"`
+	ArticleId  int       `json:"articleId"`  //文章id
+	UserId     int       `json:"userId"`     //用户id
+	IsLike     int       `json:"isLike"`     //是否点赞
+	CreateTime time.Time `json:"createTime"` //点赞时间
+	UpdateTime time.Time `json:"updateTime"` //更新时间
+}
+
+type Collect struct {
+	ID         int       `json:"id" gorm:"primary_key"`
+	ArticleId  int       `json:"articleId"`  //文章id
+	UserId     int       `json:"userId"`     //用户id
+	CreateTime time.Time `json:"createTime"` //收藏时间
+	UpdateTime time.Time `json:"updateTime"` //更新时间
+}
+
 //创建文章表
 //CREATE TABLE `articles` (
 //	  `id` int(11) NOT NULL AUTO_INCREMENT,

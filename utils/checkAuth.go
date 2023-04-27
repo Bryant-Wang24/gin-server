@@ -5,15 +5,15 @@ import (
 	"example.com/blog/model"
 )
 
-// CheckAuth 检查用户是否登录
-func CheckAuth(username, password string) bool {
+// CheckAuth 检查用户是否登录,并返回用户ID
+func CheckAuth(username, password string) (bool, int) {
 	var admin model.Admin
 	database.Db.Where("username = ?", username).First(&admin)
 	//如果用户名存在，且密码正确，返回true
 	if admin.ID != 0 && admin.Password == password {
-		return true
+		return true, admin.ID
 	}
-	return false
+	return false, 0
 }
 
 // CheckAdmin 检查用户是否是管理员

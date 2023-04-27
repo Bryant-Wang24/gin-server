@@ -27,7 +27,7 @@ func Login(c *gin.Context) {
 	ok, _ := valid.Valid(&auth)
 	data := make(map[string]interface{})
 	if ok {
-		isExist := utils.CheckAuth(auth.Username, auth.Password)
+		isExist, userId := utils.CheckAuth(auth.Username, auth.Password)
 		// 如果是登录后管，需要检查这个用户对应的is_admin字段是否为1
 		if c.Request.Header.Get("X-from") != "web" {
 			if !utils.CheckAdmin(auth.Username) {
@@ -51,6 +51,7 @@ func Login(c *gin.Context) {
 			}
 			data["token"] = token
 			data["username"] = auth.Username
+			data["userId"] = userId
 			c.JSON(200, gin.H{
 				"code": 0,
 				"msg":  "登录成功",

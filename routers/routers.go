@@ -53,6 +53,9 @@ func SetupRouter() *gin.Engine {
 		article.PUT("/publishStatus", controller.UpdateArticlePublishStatus)
 		// 是否开启文章一键收藏
 		article.POST("/collectStatus", controller.UpdateArticleCollectStatus)
+
+		// 点赞文章
+		article.POST("/like", controller.LikeArticle)
 	}
 
 	//个人简介路由组

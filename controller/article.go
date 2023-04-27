@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -244,5 +245,73 @@ func GetArticleList(c *gin.Context) {
 			"totalCount": totalCount,
 			"list":       articles,
 		},
+	})
+}
+
+// 点赞文章
+func LikeArticle(c *gin.Context) {
+	var like model.Like
+	err := c.BindJSON(&like)
+	if err != nil {
+		log.Fatal("like bind json error", err)
+	}
+	// 如果表里面有这个userId和articleId的记录，说明已经点赞过了
+	var likeRecord model.Like
+	database.Db.Where("user_id = ? AND article_id = ?", like.UserId, like.ArticleId).First(&likeRecord)
+	if likeRecord.ID != 0 {
+		c.JSON(200, gin.H{
+			"code": 1,
+			"msg":  "已点赞过了",
+		})
+		return
+	}
+	// 如果没有点赞过，就插入一条记录
+	like.CreateTime = time.Now()
+	like.UpdateTime = time.Now()
+	database.Db.Create(&like)
+	// 更新文章点赞数，查询likes表里面articleId的个数
+	var article model.Article
+	database.Db.Where("id = ?", like.ArticleId).First(&article)
+	var likeCount int64
+	database.Db.Model(&model.Like{}).Where("article_id = ?", like.ArticleId).Count(&likeCount)
+	article.Like = int(likeCount)
+	database.Db.Save(&article)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "点赞成功",
+	})
+}
+
+// 收藏文章
+func CollectArticle(c *gin.Context) {
+	var collect model.Collect
+	err := c.BindJSON(&collect)
+	if err != nil {
+		log.Fatal("collect bind json error", err)
+	}
+	// 如果表里面有这个userId和articleId的记录，说明已经收藏过了
+	var collectRecord model.Collect
+	database.Db.Where("user_id = ? AND article_id = ?", collect.UserId, collect.ArticleId).First(&collectRecord)
+	if collectRecord.ID != 0 {
+		c.JSON(200, gin.H{
+			"code": 1,
+			"msg":  "已收藏过了",
+		})
+		return
+	}
+	// 如果没有收藏过，就插入一条记录
+	collect.CreateTime = time.Now()
+	collect.UpdateTime = time.Now()
+	database.Db.Create(&collect)
+	// 更新文章收藏数，查询collects表里面articleId的个数
+	var article model.Article
+	database.Db.Where("id = ?", collect.ArticleId).First(&article)
+	var collectCount int64
+	database.Db.Model(&model.Collect{}).Where("article_id = ?", collect.ArticleId).Count(&collectCount)
+	article.Collect = int(collectCount)
+	database.Db.Save(&article)
+	c.JSON(200, gin.H{
+		"code": 0,
+		"msg":  "收藏成功",
 	})
 }
